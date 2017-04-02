@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.content.Loader;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=6&limit=10";
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
+
+    private TextView emptyTextView;
 
     //指定Loader的id
      private static final int EARTHQUAKE_LOADER_ID = 1;
@@ -52,12 +55,15 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
 
-
+         emptyTextView = (TextView)findViewById(R.id.empty_text);
+        earthquakeListView.setEmptyView(emptyTextView);
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         if (earthquakeListView != null) {
             earthquakeListView.setAdapter(mAdapter);
         }
+
+
 
         if (earthquakeListView != null) {
             earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -89,20 +95,26 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int id, Bundle args) {
+        Log.d(LOG_TAG, "onCreateLoader:  is called" );
         return new EarthquakeLoader(this, USGS_REQUEST_URL);
     }
 
     @Override
     public void onLoadFinished(android.content.Loader<List<Earthquake>> loader, List<Earthquake> data) {
+
+        emptyTextView.setText("NO EarthQuake Found!!");
+
         mAdapter.clear();
+        Log.d(LOG_TAG, "onLoadFinished: is called");
 
         if (data != null && !data.isEmpty()) {
-            mAdapter.addAll(data);
+           mAdapter.addAll(data);
         }
     }
 
     @Override
     public void onLoaderReset(android.content.Loader<List<Earthquake>> loader) {
+        Log.d(LOG_TAG, "onLoaderReset: is called");
         mAdapter.clear();
     }
 

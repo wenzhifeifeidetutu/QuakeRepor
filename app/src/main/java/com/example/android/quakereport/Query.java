@@ -161,6 +161,7 @@ public final class Query {
 
     //得到地震数据
     public static  List<Earthquake> fetchEarthquakeData(String requeseUrl) {
+        Log.d(LOG_TAG, "fetchEarthquakeData: is called ");
         //创建URL对象
         URL url = creteUrl(requeseUrl);
 
