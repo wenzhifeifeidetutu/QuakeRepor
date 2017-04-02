@@ -15,7 +15,10 @@
  */
 package com.example.android.quakereport;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.AsyncTask;
@@ -27,6 +30,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.content.Loader;
 import android.widget.TextView;
@@ -41,6 +45,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
     private TextView emptyTextView;
 
+    private ProgressBar waitProgrssBar;
+
     //指定Loader的id
      private static final int EARTHQUAKE_LOADER_ID = 1;
 
@@ -54,8 +60,9 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
 
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
+        waitProgrssBar = (ProgressBar)findViewById(R.id.wait_data);
 
-         emptyTextView = (TextView)findViewById(R.id.empty_text);
+        emptyTextView = (TextView)findViewById(R.id.empty_text);
         earthquakeListView.setEmptyView(emptyTextView);
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
@@ -87,7 +94,15 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         earthquakeAsyncTask.execute(USGS_REQUEST_URL);*/
         //改用LoaderManager管理
         LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activityNetWorkInfo = connectivityManager.getActiveNetworkInfo();
+        if (activityNetWorkInfo != null && activityNetWorkInfo.isConnectedOrConnecting()){
+            loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
+        }else {
+            emptyTextView.setText("No Internet Connection!!");
+            waitProgrssBar.setVisibility(View.GONE);
+        }
+
 
 
 
@@ -101,8 +116,9 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public void onLoadFinished(android.content.Loader<List<Earthquake>> loader, List<Earthquake> data) {
-
+        waitProgrssBar.setVisibility(View.GONE);
         emptyTextView.setText("NO EarthQuake Found!!");
+
 
         mAdapter.clear();
         Log.d(LOG_TAG, "onLoadFinished: is called");
