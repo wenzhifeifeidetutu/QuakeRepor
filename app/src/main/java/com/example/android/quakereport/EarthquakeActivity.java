@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -27,16 +28,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.content.Loader;
 
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeActivity extends AppCompatActivity {
+public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Earthquake>> {
     private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=6&limit=10";
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
+
+    //指定Loader的id
+     private static final int EARTHQUAKE_LOADER_ID = 1;
 
     private EarthquakeAdapter mAdapter;
     @Override
@@ -52,29 +55,60 @@ public class EarthquakeActivity extends AppCompatActivity {
 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
-        earthquakeListView.setAdapter(mAdapter);
+        if (earthquakeListView != null) {
+            earthquakeListView.setAdapter(mAdapter);
+        }
 
-        earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Earthquake earthquake = mAdapter.getItem(position);
-                Uri earthQuakeUri = Uri.parse(earthquake.getUri());
+        if (earthquakeListView != null) {
+            earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Earthquake earthquake = mAdapter.getItem(position);
+                    Uri earthQuakeUri = null;
+                    if (earthquake != null) {
+                        earthQuakeUri = Uri.parse(earthquake.getUri());
+                    }
 
-                Intent intent = new Intent(Intent.ACTION_VIEW, earthQuakeUri );
+                    Intent intent = new Intent(Intent.ACTION_VIEW, earthQuakeUri );
 
-                startActivity(intent);
-            }
-        });
+                    startActivity(intent);
+                }
+            });
+        }
 
 
-        EarthquakeAsyncTask earthquakeAsyncTask = new EarthquakeAsyncTask();
-        earthquakeAsyncTask.execute(USGS_REQUEST_URL);
+        /*EarthquakeAsyncTask earthquakeAsyncTask = new EarthquakeAsyncTask();
+        earthquakeAsyncTask.execute(USGS_REQUEST_URL);*/
+        //改用LoaderManager管理
+        LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
 
 
 
     }
 
-    private class EarthquakeAsyncTask extends AsyncTask<String, Void, List<Earthquake>> {
+    @Override
+    public Loader<List<Earthquake>> onCreateLoader(int id, Bundle args) {
+        return new EarthquakeLoader(this, USGS_REQUEST_URL);
+    }
+
+    @Override
+    public void onLoadFinished(android.content.Loader<List<Earthquake>> loader, List<Earthquake> data) {
+        mAdapter.clear();
+
+        if (data != null && !data.isEmpty()) {
+            mAdapter.addAll(data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(android.content.Loader<List<Earthquake>> loader) {
+        mAdapter.clear();
+    }
+
+
+
+    /*private class EarthquakeAsyncTask extends AsyncTask<String, Void, List<Earthquake>> {
         @Override
         protected List<Earthquake> doInBackground(String... urls) {
             if (urls.length < 1 || urls[0] == null){
@@ -92,13 +126,13 @@ public class EarthquakeActivity extends AppCompatActivity {
             mAdapter.clear();
 //            Log.d(LOG_TAG, "操你麻痹bug在哪里"+data.isEmpty());
             //添加data到listView中
-            if (/*data != null && data.isEmpty()*/ data != null && !data.isEmpty()){
+            if (*//*data != null && data.isEmpty()*//* data != null && !data.isEmpty()){
                 mAdapter.addAll(data);
             }
 
 
         }
-    }
+    }*/
 
 
 }
