@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--将order标签和值都导入到array数组里面-->
+    <string-array name="setting_order_by_labels">
+        <item>@string/settings_order_by_magnitude_label</item>
+        <item>@string/setting_order_by_most_recent_label</item>
+    </string-array>
+
+    <string-array name="setting_order_by_values">
+        <item>@string/settings_order_by_magnitude_value</item>
+        <item>@string/setting_order_by_most_recent_value</item>
+    </string-array>
+</resources>

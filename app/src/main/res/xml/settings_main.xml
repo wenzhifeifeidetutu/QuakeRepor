@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/setting_title"
+    >
+    <!--增加listPreference-->
+    <ListPreference
+        android:defaultValue="@string/settings_order_by_default"
+        android:entries="@array/setting_order_by_labels"
+        android:entryValues="@array/setting_order_by_values"
+        android:key="@string/settings_order_by_key"
+        android:title="@string/settings_order_by_lable"/>
+    <!--可编辑的Preference-->
+    <EditTextPreference
+        android:defaultValue="@string/settings_min_magnitude_default"
+        android:inputType="numberDecimal"
+        android:key="@string/setting_min_magnitude_key"
+        android:selectAllOnFocus="true"
+        android:title="@string/settings_min_magnitude_label"/>
+
+
+</PreferenceScreen>

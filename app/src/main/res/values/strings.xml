@@ -15,4 +15,20 @@
 -->
 <resources>
     <string name="app_name">Quake Report</string>
+    <string name="setting_menu_item">Settings</string>
+    <string name="setting_title">Earthquake Settings</string>
+    <string name="settings_min_magnitude_label">Minimum Magnitude</string>
+    <string name="setting_min_magnitude_key" translatable="false">min_magnitude</string>
+    <string name="settings_min_magnitude_default" translatable="false">6</string>
+        <!--排序字符串的preference-->
+    <string name="settings_order_by_lable">Order By</string>
+    <string name="settings_order_by_key" translatable="false"> order_by</string>
+    <string name="settings_order_by_default" translatable="false">@string/settings_order_by_magnitude_value</string>
+
+    <!--关于地震设置的标签-->
+    <string name="settings_order_by_magnitude_label">Magnitude</string>
+    <string name="settings_order_by_magnitude_value" translatable="false">magnitude</string>
+    <!--最近地址的标签设置-->
+    <string name="setting_order_by_most_recent_label">Most Recent</string>
+    <string name="setting_order_by_most_recent_value" translatable="false">time</string>
 </resources>
