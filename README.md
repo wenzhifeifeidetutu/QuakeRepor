@@ -9,8 +9,8 @@ Used in a Udacity course in the Beginning Android Nanodegree.
 More info on the USGS Earthquake API available at:
 http://earthquake.usgs.gov/fdsnws/event/1/
 
-![]1.jpg
-![]2jpg
+![](1.jpg)
+![](2.jpg)
 
 Pre-requisites
 --------------
